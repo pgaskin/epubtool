@@ -1,0 +1,29 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "Vo8c8a/bN1rftvbS6kXRq1/WO9c=",
+			"path": "github.com/bclicn/color",
+			"revision": "4c02eff8a28c1add99b3b5b238c165056c3bea8e",
+			"revisionTime": "2016-11-23T06:49:00Z"
+		},
+		{
+			"checksumSHA1": "9LeR7BH4PSu8LRDZ8bY7QY1HXJE=",
+			"path": "github.com/urfave/cli",
+			"revision": "4b90d79a682b4bf685762c7452db20f2a676ecb2",
+			"revisionTime": "2017-07-06T19:46:25Z"
+		},
+		{
+			"checksumSHA1": "brhONOPp4CSdTZf5uEtcH+FpFUI=",
+			"path": "gopkg.in/urfave/cli.v1",
+			"revision": "0bdeddeeb0f650497d603c4ad7b20cfe685682f6",
+			"revisionTime": "2016-11-22T04:36:10Z"
+		},
+		{
+			"path": "https://github.com/urfave/cli",
+			"revision": ""
+		}
+	],
+	"rootPath": "git.geek1011.net/geek1011/epubtool"
+}
