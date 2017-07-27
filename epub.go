@@ -5,8 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
+
+	"github.com/beevik/etree"
 )
 
 // UnpackEPUB unpacks an epub
@@ -207,4 +211,95 @@ func PackEPUB(src, dest string, overwritedest bool) error {
 	}
 
 	return nil
+}
+
+// EPUBMetadata reoresents the metadata of an epub book
+type EPUBMetadata struct {
+	Title       string
+	Author      string
+	Publisher   string
+	Description string
+	Series      struct {
+		Name  string
+		Index float64
+	}
+	// TODO: Add more fields
+}
+
+// GetEPUBMetadata gets the metadata of an ePub
+func GetEPUBMetadata(src string) (EPUBMetadata, error) {
+	dest, err := ioutil.TempDir("", "epubtool")
+	if err != nil {
+		return EPUBMetadata{}, errors.New("error creating temp dir")
+	}
+	defer os.RemoveAll(dest)
+
+	md := &EPUBMetadata{}
+
+	if err := UnpackEPUB(src, dest, true); err != nil {
+		return *md, fmt.Errorf("error unpacking epub: %s", err)
+	}
+
+	rsk, err := os.Open(filepath.Join(dest, "META-INF", "container.xml"))
+	if err != nil {
+		return *md, fmt.Errorf("error parsing container.xml: %s", err)
+	}
+	defer rsk.Close()
+
+	container := etree.NewDocument()
+	_, err = container.ReadFrom(rsk)
+	if err != nil {
+		return *md, fmt.Errorf("error parsing container.xml: %s", err)
+	}
+
+	rootfile := ""
+	for _, e := range container.FindElements("//rootfiles/rootfile[@full-path]") {
+		rootfile = e.SelectAttrValue("full-path", "")
+	}
+	if rootfile == "" {
+		return *md, fmt.Errorf("error parsing container.xml")
+	}
+
+	rrsk, err := os.Open(filepath.Join(dest, rootfile))
+	if err != nil {
+		return *md, fmt.Errorf("error parsing content.opf: %s", err)
+	}
+	defer rrsk.Close()
+
+	opf := etree.NewDocument()
+	_, err = opf.ReadFrom(rrsk)
+	if err != nil {
+		return *md, fmt.Errorf("error parsing content.opf: %s", err)
+	}
+
+	md.Title = filepath.Base(src)
+	for _, e := range opf.FindElements("//title") {
+		md.Title = e.Text()
+		break
+	}
+	for _, e := range opf.FindElements("//creator") {
+		md.Author = e.Text()
+		break
+	}
+	for _, e := range opf.FindElements("//publisher") {
+		md.Publisher = e.Text()
+		break
+	}
+	for _, e := range opf.FindElements("//description") {
+		md.Description = e.Text()
+		break
+	}
+	for _, e := range opf.FindElements("//meta[@name='calibre:series']") {
+		md.Series.Name = e.SelectAttrValue("content", "")
+		break
+	}
+	for _, e := range opf.FindElements("//meta[@name='calibre:series_index']") {
+		i, err := strconv.ParseFloat(e.SelectAttrValue("content", "0"), 64)
+		if err == nil {
+			md.Series.Index = i
+			break
+		}
+	}
+
+	return *md, nil
 }

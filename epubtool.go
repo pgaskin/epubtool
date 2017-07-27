@@ -90,6 +90,50 @@ func unpack(c *cli.Context) error {
 	return nil
 }
 
+func getMetadata(c *cli.Context) error {
+	if len(c.Args()) > 1 {
+		return errors.New("Too many arguments")
+	}
+
+	if len(c.Args()) < 1 {
+		return errors.New("Not enough arguments")
+	}
+
+	src := c.Args().Get(0)
+
+	if !exists(src) {
+		return fmt.Errorf("File \"%s\" does not exist", src)
+	}
+
+	m, err := GetEPUBMetadata(src)
+	if err != nil {
+		return err
+	}
+
+	if m.Title != "" {
+		fmt.Printf("       Title: %s\n", m.Title)
+	}
+
+	if m.Title != "" {
+		fmt.Printf("      Author: %s\n", m.Author)
+	}
+
+	if m.Publisher != "" {
+		fmt.Printf("   Publisher: %s\n", m.Publisher)
+	}
+
+	if m.Description != "" {
+		fmt.Printf(" Description: %s\n", m.Description)
+	}
+
+	if m.Series.Name != "" {
+		fmt.Printf("      Series: %s\n", m.Series.Name)
+		fmt.Printf("Series Index: %v\n", m.Series.Index)
+	}
+
+	return nil
+}
+
 func main() {
 	app := cli.NewApp()
 
@@ -113,6 +157,14 @@ func main() {
 			ArgsUsage:   "INPUTFILE [OUTPUTDIR]",
 			Description: "Unpacks an ePub into a directory. The directory must not already exist. By default, it will be unpacked into a new directory (with the basename of the INPUTFILE) in the current directory, but you can specify a custom OUTPUTDIR.",
 			Action:      unpack,
+		},
+		{
+			Name:        "get-metadata",
+			Aliases:     []string{"gm"},
+			Usage:       "Gets metadata of an ePub",
+			ArgsUsage:   "INPUTFILE",
+			Description: "Gets the metadata of an ePub and displays it.",
+			Action:      getMetadata,
 		},
 	}
 

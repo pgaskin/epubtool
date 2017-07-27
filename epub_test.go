@@ -24,3 +24,7 @@ func TestPackUnpack(t *testing.T) {
 	assert.True(t, exists(filepath.Join(td, "test1")), "output dir should exist")
 	assert.True(t, exists(filepath.Join(td, "test1", "META-INF", "container.xml")), "META-INF/container.xml should exist in output dir")
 }
+
+func TestGetEPUBMetadata(t *testing.T) {
+	// TODO
+}

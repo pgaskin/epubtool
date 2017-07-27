@@ -9,6 +9,12 @@
 			"revisionTime": "2016-11-23T06:49:00Z"
 		},
 		{
+			"checksumSHA1": "V8IOVCEbg5n8vBs0x7svZ0sv1P0=",
+			"path": "github.com/beevik/etree",
+			"revision": "09746331a38f3da8c023a85a65c8c152070de725",
+			"revisionTime": "2017-05-11T20:24:51Z"
+		},
+		{
 			"checksumSHA1": "9LeR7BH4PSu8LRDZ8bY7QY1HXJE=",
 			"path": "github.com/urfave/cli",
 			"revision": "4b90d79a682b4bf685762c7452db20f2a676ecb2",
