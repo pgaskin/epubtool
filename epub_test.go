@@ -26,5 +26,13 @@ func TestPackUnpack(t *testing.T) {
 }
 
 func TestGetEPUBMetadata(t *testing.T) {
-	// TODO
+	book, err := GetEPUBMetadata("testdata/books/test1.epub")
+	assert.Nil(t, err, "err should be nil")
+
+	assert.Equal(t, "epubtool Test Book 1", book.Title, "title")
+	assert.Equal(t, "Patrick G", book.Author, "author")
+	assert.Equal(t, "Patrick G", book.Publisher, "publisher")
+	assert.Equal(t, "<p>This is a test book for <i>epubtool</i>.</p>", book.Description, "description")
+	assert.Equal(t, "Test Series", book.Series.Name, "series name")
+	assert.Equal(t, float64(1), book.Series.Index, "series index")
 }
