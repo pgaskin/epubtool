@@ -23,6 +23,8 @@ func TestPackUnpack(t *testing.T) {
 	assert.Nil(t, UnpackEPUB(filepath.Join(td, "test1.epub"), filepath.Join(td, "test1"), true), "unpackepub should not return an error")
 	assert.True(t, exists(filepath.Join(td, "test1")), "output dir should exist")
 	assert.True(t, exists(filepath.Join(td, "test1", "META-INF", "container.xml")), "META-INF/container.xml should exist in output dir")
+
+	assert.NotNil(t, PackEPUB(filepath.Join("testdata", "books", "invalid"), filepath.Join(td, "invalid.epub"), true), "packepub should return an error for an epub withot a container.xml")
 }
 
 func TestGetEPUBMetadata(t *testing.T) {
