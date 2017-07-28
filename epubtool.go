@@ -270,7 +270,7 @@ func main() {
 	app := cli.NewApp()
 
 	app.Name = "epubtool"
-	app.Description = "A tool to manipulate ePub files"
+	app.Usage = "A tool to manipulate ePub files"
 	app.Version = version
 
 	app.Commands = []cli.Command{
