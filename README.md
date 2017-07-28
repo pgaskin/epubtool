@@ -9,12 +9,12 @@ work-in-progress
 - Pack
 - Unpack
 - Get metadata
+- Validate
 - Coming soon:
     - Set metadata
     - Clean ePub
     - Add CSS
     - Add JS
-    - Validate
 
 ## Usage
 - `epubtool pack /path/to/unpacked/ebook/` will pack to `./ebook.epub`
