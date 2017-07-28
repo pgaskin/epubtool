@@ -1,4 +1,4 @@
-.PHONE: default
+.PHONY: default
 default: clean test build
 
 .PHONY: test
