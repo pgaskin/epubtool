@@ -215,14 +215,14 @@ func PackEPUB(src, dest string, overwritedest bool) error {
 
 // EPUBMetadata reoresents the metadata of an epub book
 type EPUBMetadata struct {
-	Title       string
-	Author      string
-	Publisher   string
-	Description string
+	Title       string `json:"title,omitempty"`
+	Author      string `json:"author,omitempty"`
+	Publisher   string `json:"publisher,omitempty"`
+	Description string `json:"description,omitempty"`
 	Series      struct {
-		Name  string
-		Index float64
-	}
+		Name  string  `json:"name,omitempty"`
+		Index float64 `json:"index,omitempty"`
+	} `json:"series,omitempty"`
 	// TODO: Add more fields
 }
 
