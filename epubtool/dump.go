@@ -32,7 +32,7 @@ func dumpMain(args []string, fs *pflag.FlagSet) int {
 			fmt.Print(opf)
 			return opf, nil
 		},
-	}).Run(et.AutoInput(fn), nil); err != nil {
+	}).Run(et.AutoInput(fn), nil, false); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		return 1
 	}

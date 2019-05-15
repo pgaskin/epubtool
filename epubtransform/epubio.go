@@ -25,6 +25,22 @@ func AutoInput(path string) InputFunc {
 	}
 }
 
+// AutoOutput automatically chooses an OutputFunc to be the same as the input.
+func AutoOutput(inputPath string) OutputFunc {
+	return func(epubdir string) error {
+		if fi, err := os.Stat(inputPath); err != nil {
+			return util.Wrap(err, "could not stat input")
+		} else if fi.IsDir() {
+			return DirOutput(inputPath)(epubdir)
+		} else if filepath.Ext(inputPath) == ".epub" {
+			return FileOutput(inputPath)(epubdir)
+		}
+		return errors.New("unrecognized input file")
+	}
+}
+
+// TODO: reduce duplication between AutoInput and AutoOutput
+
 // FileInput returns an InputFunc to read from an epub file.
 func FileInput(file string) InputFunc {
 	return func(epubdir string) error {

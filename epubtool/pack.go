@@ -30,7 +30,7 @@ func packMain(args []string, fs *pflag.FlagSet) int {
 
 	fmt.Printf("Packing %#v to %#v\n", f, of)
 
-	if err := et.New().Run(et.DirInput(f), et.FileOutput(of)); err != nil {
+	if err := et.New().Run(et.DirInput(f), et.FileOutput(of), false); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		return 1
 	}

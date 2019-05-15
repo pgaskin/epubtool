@@ -35,7 +35,7 @@ func unpackMain(args []string, fs *pflag.FlagSet) int {
 	fn := filepath.Base(fp)
 	fmt.Printf("Unpacking %#v to %#v\n", f, fn)
 
-	if err := et.New().Run(et.FileInput(f), et.DirOutput(fn)); err != nil {
+	if err := et.New().Run(et.FileInput(f), et.DirOutput(fn), false); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		return 1
 	}
