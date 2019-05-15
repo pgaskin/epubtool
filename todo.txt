@@ -1,0 +1,48 @@
+type EPUBTransform struct {
+    Input func() (dir string, err error)
+    Output func(dir string) error
+    OPFTransforms []func(opf *etree.Doc) error
+    ContentTransforms []func(doc string) error
+    ContentDocTransforms []func(doc string) error
+    NCXTransforms []func(ncx *etree.Doc) error
+    RawTransforms []func(dir string) error
+}
+
+epubtool transform-meta --title "Test" --series "Test" --series-index 2 --set-meta "asd=dfg" book.epub
+ - Input
+ - Output
+ - OPFTransforms
+
+epubtool transform-content --remove-tag-empty "extratag" --remove-tag "aside" --remove-meta "Adept.Expected.Resource" --remove-attr "data-resource" --regexp-find-replace "[asd]|sdf" book.epub
+ - Input
+ - Output
+ - ContentDocTransforms
+ - ContentTransforms
+
+epubtool verify --ignore-common-notreallyimportant-errors --ignore-contains "RSC-005" --external-jar epubcheck.jar book.epub
+ - Input
+ - Output
+ - ext: verify
+
+epubtool clean --remove-adept --remove-itunes --remove-calibre --format-content book.epub
+ - Input
+ - Output
+ - OPFTransforms
+ - ContentTransforms
+ - ContentDocTransforms
+ - RawTransforms
+
+epubtool unpack book.epub
+ - Input
+ - Output
+
+epubtool pack book.epub
+ - Input
+ - Output
+
+epubtool dump --opf --ncx --files book.epub
+ - Input
+ - Output
+ - OPFTransforms
+ - NCXTransforms
+ - RawTransforms
