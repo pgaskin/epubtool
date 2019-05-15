@@ -26,7 +26,7 @@ func transformOPFMain(args []string, fs *pflag.FlagSet) int {
 	help := fs.BoolP("help", "h", false, "Show this help text")
 	fs.Parse(args)
 
-	if *help || fs.NArg() != 2 || !(*title != "" || *creator != "") {
+	if *help || fs.NArg() != 2 || !(*title != "" || *creator != "" || *description != "" || *series != "" || *seriesIndex >= 0 || *dump) {
 		transformOPFHelp(args, fs)
 		return 2
 	}

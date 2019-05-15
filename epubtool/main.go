@@ -15,6 +15,7 @@ type command struct {
 	Name  string
 	Short string
 	Main  func(args []string, fs *pflag.FlagSet) int
+	// TODO: description
 }
 
 func main() {
