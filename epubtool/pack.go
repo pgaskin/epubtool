@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/pflag"
 
@@ -24,7 +26,7 @@ func packMain(args []string, fs *pflag.FlagSet) int {
 	}
 
 	f := fs.Arg(1)
-	of := f + ".epub"
+	of := strings.TrimRight(filepath.Clean(f), "/\\") + ".epub"
 
 	fmt.Printf("Packing %#v to %#v\n", f, of)
 

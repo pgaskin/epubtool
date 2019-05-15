@@ -17,5 +17,5 @@ func Wrap(err error, format string, a ...interface{}) error {
 // SplitExt splits a file path into a file and extension.
 func SplitExt(path string) (string, string) {
 	ext := filepath.Ext(path)
-	return strings.TrimRight(path, ext), ext
+	return strings.TrimSuffix(path, ext), ext
 }
