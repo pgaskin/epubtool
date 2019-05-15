@@ -5,9 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/spf13/pflag"
+
 	et "github.com/geek1011/epubtool/epubtransform"
 	"github.com/geek1011/epubtool/util"
-	"github.com/spf13/pflag"
 )
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 }
 
 func unpackMain(args []string, fs *pflag.FlagSet) int {
+	// TODO: custom output dir
 	help := fs.BoolP("help", "h", false, "Show this help text")
 	fs.Parse(args)
 

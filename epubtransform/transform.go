@@ -1,8 +1,10 @@
 package epubtransform
 
 import (
+	"errors"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/geek1011/epubtool/util"
 )
@@ -10,10 +12,10 @@ import (
 // Pipeline represents a series of transformations.
 type Pipeline []Transform
 
-// InputFunc puts an unpacked epub in epubdir.
+// InputFunc puts an unpacked epub in epubdir (epubdir will always exist and be empty).
 type InputFunc func(epubdir string) error
 
-// OutputFunc writes the output epub from epubdir.
+// OutputFunc writes the output epub from epubdir (epubdir will always exist).
 type OutputFunc func(epubdir string) error
 
 // Transform is a single transformation applied to an unpacked epub.
@@ -38,6 +40,10 @@ func (p Pipeline) Run(input InputFunc, output OutputFunc) error {
 
 	if err := input(epubdir); err != nil {
 		return util.Wrap(err, "could not run input")
+	}
+
+	if _, err := os.Stat(filepath.Join(epubdir, "META-INF", "container.xml")); err != nil {
+		return errors.New("could not access META-INF/container.xml")
 	}
 
 	for _, transform := range p {
