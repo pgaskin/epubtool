@@ -21,7 +21,7 @@ func packMain(args []string, fs *pflag.FlagSet) int {
 	fs.Parse(args)
 
 	if *help || fs.NArg() != 2 {
-		unpackHelp(args, fs)
+		packHelp(args, fs)
 		return 2
 	}
 

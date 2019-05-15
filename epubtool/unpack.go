@@ -29,6 +29,7 @@ func unpackMain(args []string, fs *pflag.FlagSet) int {
 	fp, fe := util.SplitExt(f)
 	if fe != ".epub" {
 		fmt.Fprintf(os.Stderr, "Error: %s is not an epub file\n", f)
+		return 1
 	}
 
 	fn := filepath.Base(fp)
