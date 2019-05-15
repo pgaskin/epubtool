@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -31,11 +32,34 @@ func AutoOutput(inputPath string) OutputFunc {
 		if fi, err := os.Stat(inputPath); err != nil {
 			return util.Wrap(err, "could not stat input")
 		} else if fi.IsDir() {
-			return DirOutput(inputPath)(epubdir)
+			return replaceOutputWrapper(inputPath, DirOutput)(epubdir)
 		} else if filepath.Ext(inputPath) == ".epub" {
-			return FileOutput(inputPath)(epubdir)
+			return replaceOutputWrapper(inputPath, FileOutput)(epubdir)
 		}
 		return errors.New("unrecognized input file")
+	}
+}
+
+// replaceOutputWrapper wraps a path-based OutputFunc generator to allow overwriting an existing output safely.
+func replaceOutputWrapper(outputPath string, fn func(path string) OutputFunc) OutputFunc {
+	return func(epubdir string) error {
+		td, err := ioutil.TempDir("", "epubio-*")
+		if err != nil {
+			return util.Wrap(err, "error creating temp output dir")
+		}
+		defer os.RemoveAll(td)
+
+		tdo := filepath.Join(td, filepath.Base(outputPath))
+		if err := fn(tdo)(epubdir); err != nil {
+			return err
+		}
+
+		os.RemoveAll(outputPath)
+
+		if err := util.Copy(tdo, outputPath); err != nil {
+			return util.Wrap(err, "error copying output into place")
+		}
+		return nil
 	}
 }
 

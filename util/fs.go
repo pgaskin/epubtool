@@ -8,6 +8,18 @@ import (
 	"path/filepath"
 )
 
+// Copy copies a file or directory to a nonexistent destination, preserving the
+// permissions of its contents.
+func Copy(src, dst string) error {
+	if fi, err := os.Stat(src); err != nil {
+		return err
+	} else if fi.IsDir() {
+		return CopyDir(src, dst)
+	} else {
+		return CopyFile(src, dst)
+	}
+}
+
 // CopyDir copies a directory tree to a nonexistent destination, preserving the
 // permissions of its contents. The destination must not exist. Symlinks are not
 // supported.
