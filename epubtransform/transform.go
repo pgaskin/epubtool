@@ -11,7 +11,7 @@ import (
 type Pipeline []Transform
 
 // InputFunc puts an unpacked epub in epubdir.
-type InputFunc func(epubdir string) (err error)
+type InputFunc func(epubdir string) error
 
 // OutputFunc writes the output epub from epubdir.
 type OutputFunc func(epubdir string) error
@@ -23,8 +23,13 @@ type Transform struct {
 	// TODO: OPFDoc, NCXDoc, OPF, NCX, ContentFile; only parse/encode doc if required
 }
 
-// Transform runs the transform pipeline.
-func (p Pipeline) Transform(input InputFunc, output OutputFunc) error {
+// New creates a new pipeline.
+func New(transforms ...Transform) Pipeline {
+	return Pipeline(transforms)
+}
+
+// Run runs the transform pipeline.
+func (p Pipeline) Run(input InputFunc, output OutputFunc) error {
 	epubdir, err := ioutil.TempDir("", "epub-*")
 	if err != nil {
 		return util.Wrap(err, "could not create temp dir")
