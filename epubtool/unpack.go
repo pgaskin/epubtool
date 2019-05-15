@@ -43,6 +43,6 @@ func unpackMain(args []string, fs *pflag.FlagSet) int {
 }
 
 func unpackHelp(args []string, fs *pflag.FlagSet) {
-	fmt.Fprintf(os.Stderr, "Usage: %s [options] INPUT\n\nOptions:\n", args[0])
+	fmt.Fprintf(os.Stderr, "Usage: %s [options] epub_file\n\nOptions:\n", args[0])
 	fs.PrintDefaults()
 }

@@ -38,6 +38,6 @@ func packMain(args []string, fs *pflag.FlagSet) int {
 }
 
 func packHelp(args []string, fs *pflag.FlagSet) {
-	fmt.Fprintf(os.Stderr, "Usage: %s [options] INPUT\n\nOptions:\n", args[0])
+	fmt.Fprintf(os.Stderr, "Usage: %s [options] epub_dir\n\nOptions:\n", args[0])
 	fs.PrintDefaults()
 }

@@ -2,6 +2,7 @@ package epubtransform
 
 import (
 	"archive/zip"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -10,7 +11,19 @@ import (
 	"github.com/geek1011/epubtool/util"
 )
 
-// TODO: AutoInput
+// AutoInput automatically chooses an InputFunc from FileInput and DirInput.
+func AutoInput(path string) InputFunc {
+	return func(epubdir string) error {
+		if fi, err := os.Stat(path); err != nil {
+			return util.Wrap(err, "could not stat input")
+		} else if fi.IsDir() {
+			return DirInput(path)(epubdir)
+		} else if filepath.Ext(path) == ".epub" {
+			return FileInput(path)(epubdir)
+		}
+		return errors.New("unrecognized input file")
+	}
+}
 
 // FileInput returns an InputFunc to read from an epub file.
 func FileInput(file string) InputFunc {

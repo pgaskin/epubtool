@@ -50,5 +50,5 @@ func main() {
 }
 
 func globalHelp(cmdList []string) {
-	fmt.Fprintf(os.Stderr, "Usage: %s (%s) [options] INPUT\n", os.Args[0], strings.Join(cmdList, "|"))
+	fmt.Fprintf(os.Stderr, "Usage: %s (%s) [options] epub_path\n", os.Args[0], strings.Join(cmdList, "|"))
 }
