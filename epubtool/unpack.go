@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	commands = append(commands, &command{"unpack", "u", unpackMain})
+	commands = append(commands, &command{"unpack", "u", "Unpack a book.", unpackMain})
 }
 
 func unpackMain(args []string, fs *pflag.FlagSet) int {

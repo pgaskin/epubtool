@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	commands = append(commands, &command{"dump", "d", dumpMain})
+	commands = append(commands, &command{"dump", "d", "Show internal files from a book.", dumpMain})
 }
 
 func dumpMain(args []string, fs *pflag.FlagSet) int {

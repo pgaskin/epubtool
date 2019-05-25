@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	commands = append(commands, &command{"transform-opf", "to", transformOPFMain})
+	commands = append(commands, &command{"transform-opf", "to", "Modify a book's OPF metadata.", transformOPFMain})
 }
 
 func transformOPFMain(args []string, fs *pflag.FlagSet) int {

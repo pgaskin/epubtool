@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	commands = append(commands, &command{"validate", "v", validateMain})
+	commands = append(commands, &command{"validate", "v", "Run epubcheck on a book.", validateMain})
 }
 
 func validateMain(args []string, fs *pflag.FlagSet) int {
