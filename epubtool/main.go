@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 
 	"github.com/spf13/pflag"
 )
@@ -37,7 +38,14 @@ func main() {
 		os.Exit(2)
 	}
 
-	if cmd, ok := cmdMap[os.Args[1]]; !ok {
+	if os.Args[1] == "help" {
+		globalHelp()
+		for _, cmd := range commands {
+			fmt.Printf("\n=== %s ===\n", strings.ToUpper(cmd.Name))
+			z := os.Args[0] + " " + cmd.Name
+			cmd.Main([]string{z, "--help"}, pflag.NewFlagSet(z, pflag.ExitOnError))
+		}
+	} else if cmd, ok := cmdMap[os.Args[1]]; !ok {
 		globalHelp()
 		os.Exit(2)
 	} else {
@@ -52,5 +60,6 @@ func globalHelp() {
 	for _, cmd := range commands {
 		fmt.Fprintf(os.Stderr, "  %-20s %s\n", fmt.Sprintf("%s (%s)", cmd.Name, cmd.Short), cmd.Description)
 	}
+	fmt.Fprintf(os.Stderr, "  %-20s %s\n", "help", "Show help for all commands")
 	fmt.Fprintf(os.Stderr, "\nOptions:\n  -h, --help   Show this help text\n")
 }
