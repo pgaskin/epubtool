@@ -1,6 +1,4 @@
 # epubtool
-[![Build Status](https://travis-ci.org/geek1011/epubtool.svg?branch=master)](https://travis-ci.org/geek1011/epubtool)
-
 A tool and library to manipulate ePub files. This rewrite is currently a work in progress.
 
 ## Examples
@@ -24,3 +22,17 @@ $ epubtool d --opf book.epub
 # You can also use an unpacked epub with the above commands
 $ epubtool to --title "New Title" book-folder/
 ```
+
+## Features
+- Dump internal epub files (opf, ncx, etc).
+- Pack/unpack epubs.
+- Apply transformations to the OPF document.
+- Validate an epub.
+- Work with packed and unpacked epubs.
+- Future:
+  - Apply transformations on content files.
+  - Get metadata from epubs.
+  - Optimize CSS.
+  - Automatic cleanup.
+  - Generate new epubs from source files (markdown or html).
+  - Diff two epubs.
