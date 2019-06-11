@@ -1,2 +1,4 @@
-epubtool
 build
+.old
+todo.txt
+epubcheck/epubcheck_generated.go
