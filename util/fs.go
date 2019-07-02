@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/mattn/go-zglob"
 )
 
 // Copy copies a file or directory to a nonexistent destination, preserving the
@@ -84,4 +86,17 @@ func CopyFile(src, dst string) error {
 	}
 
 	return nil
+}
+
+// MultiGlob globs for multiple patterns.
+func MultiGlob(base string, patterns ...string) ([]string, error) {
+	var res []string
+	for _, pattern := range patterns {
+		v, err := zglob.Glob(filepath.Join(base, pattern))
+		if err != nil {
+			return res, err
+		}
+		res = append(res, v...)
+	}
+	return res, nil
 }

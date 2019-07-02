@@ -7,7 +7,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/beevik/etree"
 	"github.com/geek1011/epubtool/util"
 )
@@ -23,11 +25,13 @@ type OutputFunc func(epubdir string) error
 
 // Transform is a single transformation applied to an unpacked epub.
 type Transform struct {
-	Desc   string
-	OPF    func(opf string) (newOPF string, err error)
-	OPFDoc func(opf *etree.Document) error
-	Raw    func(epubdir string) error
-	// TODO: OPFDoc, NCXDoc, NCX, ContentFile; only parse/encode doc if required
+	Desc        string
+	OPF         func(opf string) (newOPF string, err error)
+	OPFDoc      func(opf *etree.Document) error
+	Raw         func(epubdir string) error
+	ContentFile func(relpath, html string) (newHTML string, err error)
+	ContentDoc  func(relpath string, doc *goquery.Document) error // warning: don't use this with badly structured html (i.e. unclosed tags)
+	// TODO: NCXDoc, NCX
 }
 
 // New creates a new pipeline.
@@ -77,6 +81,16 @@ func (p Pipeline) Run(input InputFunc, output OutputFunc, verbose bool) error {
 				return util.Wrap(err, "could not run raw transform (%s)", transform.Desc)
 			}
 		}
+		if transform.ContentFile != nil {
+			if err := transformContent(epubdir, transform.ContentFile); err != nil {
+				return util.Wrap(err, "could not run content transform (%s)", transform.Desc)
+			}
+		}
+		if transform.ContentDoc != nil {
+			if err := transformContentDoc(epubdir, transform.ContentDoc); err != nil {
+				return util.Wrap(err, "could not run contentdoc transform (%s)", transform.Desc)
+			}
+		}
 	}
 
 	if output == nil {
@@ -96,29 +110,32 @@ func (p Pipeline) Run(input InputFunc, output OutputFunc, verbose bool) error {
 	return nil
 }
 
-func transformOPF(epubdir string, fn func(opf string) (string, error)) error {
-	op, err := getOPFPath(epubdir)
+func transformFile(filename string, fn func(string) (string, error)) error {
+	buf, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return util.Wrap(err, "could not get opf path")
+		return util.Wrap(err, "could not read file")
 	}
-	buf, err := ioutil.ReadFile(op)
-	if err != nil {
-		return util.Wrap(err, "could not read opf")
-	}
-	nopf, err := fn(string(buf))
+	nstr, err := fn(string(buf))
 	if err != nil {
 		return err
 	}
-	nbuf := []byte(nopf)
-	if !bytes.Equal(buf, nbuf) {
-		if err := ioutil.WriteFile(op, nbuf, 0644); err != nil {
-			return util.Wrap(err, "could not write new opf")
+	if nbuf := []byte(nstr); !bytes.Equal(buf, nbuf) {
+		if err := ioutil.WriteFile(filename, nbuf, 0644); err != nil {
+			return util.Wrap(err, "could not write new file")
 		}
 	}
 	return nil
 }
 
-func transformOPFDoc(epubdir string, fn func(opf *etree.Document) error) error {
+func transformOPF(epubdir string, fn func(string) (string, error)) error {
+	op, err := getOPFPath(epubdir)
+	if err != nil {
+		return util.Wrap(err, "could not get opf path")
+	}
+	return transformFile(op, fn)
+}
+
+func transformOPFDoc(epubdir string, fn func(*etree.Document) error) error {
 	return transformOPF(epubdir, func(opf string) (string, error) {
 		doc := etree.NewDocument()
 		if err := doc.ReadFromString(opf); err != nil {
@@ -132,5 +149,41 @@ func transformOPFDoc(epubdir string, fn func(opf *etree.Document) error) error {
 			return opf, err
 		}
 		return nopf, nil
+	})
+}
+
+func transformContent(epubdir string, fn func(string, string) (string, error)) error {
+	files, err := util.MultiGlob(epubdir, "**/*.html", "**/*.xhtml", "**/*.htm")
+	if err != nil {
+		return err
+	}
+	for _, file := range files {
+		relpath, err := filepath.Rel(epubdir, file)
+		if err != nil {
+			return err
+		}
+		if err := transformFile(file, func(str string) (string, error) {
+			return fn(relpath, str)
+		}); err != nil {
+			return util.Wrap(err, "transform %#v", file)
+		}
+	}
+	return nil
+}
+
+func transformContentDoc(epubdir string, fn func(string, *goquery.Document) error) error {
+	return transformContent(epubdir, func(relpath string, str string) (string, error) {
+		doc, err := goquery.NewDocumentFromReader(strings.NewReader(str))
+		if err != nil {
+			return str, err
+		}
+		if err := fn(relpath, doc); err != nil {
+			return str, err
+		}
+		nstr, err := doc.Html()
+		if err != nil {
+			return str, err
+		}
+		return nstr, nil
 	})
 }
