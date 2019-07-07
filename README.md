@@ -21,6 +21,9 @@ $ epubtool d --opf book.epub
 
 # You can also use an unpacked epub with the above commands
 $ epubtool to --title "New Title" book-folder/
+
+# Automatically rename all the books in a folder into another directory.
+$ epubtool r --clean --output ./out/ --pattern "{{.title}} - {{.author}}.epub" *.epub
 ```
 
 ## Features
@@ -29,6 +32,7 @@ $ epubtool to --title "New Title" book-folder/
 - Apply transformations to the OPF document.
 - Validate an epub.
 - Work with packed and unpacked epubs.
+- Automatically rename epubs.
 - Future:
   - Apply transformations on content files.
   - Get metadata from epubs.
