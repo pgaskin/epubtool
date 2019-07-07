@@ -22,6 +22,11 @@ func TransformDescription(description string) Transform {
 	return TransformOPFMetadataElementContent(fmt.Sprintf("set description to %#v", description), "dc:description", description)
 }
 
+// TransformPublisher sets the epub opf dc:publisher.
+func TransformPublisher(publisher string) Transform {
+	return TransformOPFMetadataElementContent(fmt.Sprintf("set publisher to %#v", publisher), "dc:publisher", publisher)
+}
+
 // TransformOPFMetadataElementContent sets the text content of the first instance of an element in package>metadata>element.
 func TransformOPFMetadataElementContent(desc, tag, content string) Transform {
 	return Transform{
@@ -41,11 +46,14 @@ func TransformOPFMetadataElementContent(desc, tag, content string) Transform {
 	}
 }
 
-// TransformOPFMetaElementContent sets the content attribute of the first instance of a package>metadata>meta[name][content].
+// TransformOPFMetaElementContent sets the content attribute of the first instance of a package>metadata>meta[name][content]. The element will be removed if content is blank.
 func TransformOPFMetaElementContent(desc, name, content string) Transform {
 	return Transform{
 		Desc: desc,
 		OPFDoc: func(opf *etree.Document) error {
+			if name == "" {
+				return errors.New("no meta name provided")
+			}
 			me := opf.FindElement("//package/metadata")
 			if me == nil {
 				return errors.New("could not find package>metadata element")
@@ -56,6 +64,12 @@ func TransformOPFMetaElementContent(desc, name, content string) Transform {
 					mel = el
 					break
 				}
+			}
+			if content == "" {
+				if mel != nil {
+					mel.Parent().RemoveChild(mel)
+				}
+				return nil
 			}
 			if mel == nil {
 				mel = me.CreateElement("meta")

@@ -18,15 +18,17 @@ func transformOPFMain(args []string, fs *pflag.FlagSet) int {
 	title := fs.StringP("title", "t", "", "Set dc:title")
 	creator := fs.StringP("creator", "c", "", "Set dc:creator")
 	description := fs.StringP("description", "d", "", "Set dc:description")
+	publisher := fs.StringP("publisher", "p", "", "Set dc:publisher")
 	series := fs.String("series", "", "Set calibre:series meta")
 	seriesIndex := fs.Float64("series-index", 0, "Set calibre:series_index meta")
 	dump := fs.Bool("dump", false, "Show OPF after transformations")
+	meta := fs.StringToStringP("meta", "m", map[string]string{}, "Set one or more meta[name][content] tags (will remove if content is blank) (format name=content)")
 	dryRun := fs.Bool("dry-run", false, "Do not actually overwrite file")
 	beautify := fs.Int("beautify", 4, "Indent the OPF by a number of spaces (0 to disable)")
 	help := fs.BoolP("help", "h", false, "Show this help text")
 	fs.Parse(args)
 
-	if *help || fs.NArg() != 2 || !(*title != "" || *creator != "" || *description != "" || *series != "" || *seriesIndex >= 0 || *dump) {
+	if *help || fs.NArg() != 2 || !(*title != "" || *creator != "" || *description != "" || *series != "" || *seriesIndex >= 0 || len(*meta) > 0 || *dump) {
 		transformOPFHelp(args, fs)
 		return 2
 	}
@@ -42,6 +44,16 @@ func transformOPFMain(args []string, fs *pflag.FlagSet) int {
 	}
 	if *description != "" {
 		pipeline = append(pipeline, et.TransformDescription(*description))
+	}
+	if *publisher != "" {
+		pipeline = append(pipeline, et.TransformPublisher(*publisher))
+	}
+	for name, content := range *meta {
+		txt := fmt.Sprintf("set meta[name=%#v][content=%#v]", name, content)
+		if content == "" {
+			txt = fmt.Sprintf("remove meta[name=%#v]", name)
+		}
+		pipeline = append(pipeline, et.TransformOPFMetaElementContent(txt, name, content))
 	}
 	if *series != "" {
 		pipeline = append(pipeline, et.TransformOPFMetaElementContent(fmt.Sprintf("set series to %#v", *series), "calibre:series", *series))
