@@ -12,8 +12,8 @@ import (
 	"path"
 )
 
-const downloadURL = "https://github.com/w3c/epubcheck/releases/download/v4.2.2/epubcheck-4.2.2.zip"
-const epubCheckName = "epubcheck-4.2.2/epubcheck.jar"
+const downloadURL = "https://github.com/w3c/epubcheck/releases/download/v4.2.4/epubcheck-4.2.4.zip"
+const epubCheckName = "epubcheck-4.2.4/epubcheck.jar"
 
 func main() {
 	fmt.Println("Downloading", downloadURL)
