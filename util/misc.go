@@ -14,7 +14,7 @@ func Wrap(err error, format string, a ...interface{}) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("%s: %v", fmt.Sprintf(format, a...), err)
+	return fmt.Errorf("%s: %w", fmt.Sprintf(format, a...), err)
 }
 
 // SplitExt splits a file path into a file and extension.
