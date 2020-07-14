@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/pflag"
 
-	et "github.com/geek1011/epubtool/epubtransform"
+	et "github.com/pgaskin/epubtool/epubtransform"
 )
 
 func init() {

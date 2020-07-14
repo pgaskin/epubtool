@@ -6,8 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/beevik/etree"
-
-	"github.com/geek1011/epubtool/util"
+	"github.com/pgaskin/epubtool/util"
 )
 
 func getOPFPath(epubdir string) (string, error) {

@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/geek1011/epubtool/util"
+	"github.com/pgaskin/epubtool/util"
 )
 
 // AutoInput automatically chooses an InputFunc from FileInput and DirInput.

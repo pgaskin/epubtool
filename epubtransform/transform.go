@@ -11,7 +11,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/beevik/etree"
-	"github.com/geek1011/epubtool/util"
+	"github.com/pgaskin/epubtool/util"
 )
 
 // Pipeline represents a series of transformations.

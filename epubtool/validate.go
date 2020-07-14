@@ -8,8 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/pflag"
-
-	"github.com/geek1011/epubtool/epubcheck"
+	"github.com/pgaskin/epubtool/epubcheck"
 )
 
 func init() {

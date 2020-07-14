@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/geek1011/epubtool/util"
+	"github.com/pgaskin/epubtool/util"
 )
 
 //go:generate go run epubcheck_generate.go

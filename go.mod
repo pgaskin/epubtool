@@ -1,4 +1,4 @@
-module github.com/geek1011/epubtool
+module github.com/pgaskin/epubtool
 
 go 1.12
 

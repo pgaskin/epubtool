@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/beevik/etree"
-	"github.com/geek1011/epubtool/epubtransform"
+	"github.com/pgaskin/epubtool/epubtransform"
 	"github.com/spf13/pflag"
 )
 
